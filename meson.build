@@ -38,6 +38,24 @@ spvc_src = files(
     'spirv_reflect.cpp',
 )
 
+spvc_hdr = files(
+    'GLSL.std.450.h',
+    'spirv_cfg.hpp',
+    'spirv_common.hpp',
+    'spirv_cpp.hpp',
+    'spirv_cross_c.h',
+    'spirv_cross.hpp',
+    'spirv_cross_parsed_ir.hpp',
+    'spirv_cross_util.hpp',
+    'spirv_glsl.hpp',
+    'spirv.h',
+    'spirv_hlsl.hpp',
+    'spirv.hpp',
+    'spirv_msl.hpp',
+    'spirv_parser.hpp',
+    'spirv_reflect.hpp',
+)
+
 spvc_incdirs = include_directories('.', 'include')
 
 libspirv_cross = library('spirv-cross',
@@ -46,9 +64,18 @@ libspirv_cross = library('spirv-cross',
     build_by_default : not meson.is_subproject(),
     include_directories : spvc_incdirs,
     gnu_symbol_visibility : 'hidden',
+    install : not meson.is_subproject(),
 )
+
+install_headers(spvc_hdr, subdir : 'spirv_cross')
 
 spirv_cross_dep = declare_dependency(
     link_with : libspirv_cross,
     include_directories : spvc_incdirs,
+)
+
+pkg = import('pkgconfig')
+pkg.generate(libspirv_cross,
+    subdirs : 'spirv_cross',
+    version : '0.13.0'
 )
