@@ -15,6 +15,8 @@ add_project_arguments(
     language : 'cpp',
 )
 
+spvc_install = not meson.is_subproject()
+
 spvc_defs = [
     '-DSPIRV_CROSS_C_API_CPP=1',
     '-DSPIRV_CROSS_C_API_GLSL=1',
@@ -64,18 +66,20 @@ libspirv_cross = library('spirv-cross',
     build_by_default : not meson.is_subproject(),
     include_directories : spvc_incdirs,
     gnu_symbol_visibility : 'hidden',
-    install : not meson.is_subproject(),
+    install : spvc_install,
 )
-
-install_headers(spvc_hdr, subdir : 'spirv_cross')
 
 spirv_cross_dep = declare_dependency(
     link_with : libspirv_cross,
     include_directories : spvc_incdirs,
 )
 
-pkg = import('pkgconfig')
-pkg.generate(libspirv_cross,
-    subdirs : 'spirv_cross',
-    version : '0.13.0'
-)
+if spvc_install
+    install_headers(spvc_hdr, subdir : 'spirv_cross')
+
+    pkg = import('pkgconfig')
+    pkg.generate(libspirv_cross,
+        subdirs : 'spirv_cross',
+        version : '0.13.0'
+    )
+endif
