@@ -15,6 +15,15 @@ add_project_arguments(
     language : 'cpp',
 )
 
+add_project_arguments(
+    meson.get_compiler('cpp', native : true).get_supported_arguments(
+        '-fno-exceptions',
+        '-fno-rtti',
+    ),
+    language : 'cpp',
+    native : true,
+)
+
 spvc_install = not meson.is_subproject()
 
 spvc_defs = [
@@ -72,6 +81,31 @@ libspirv_cross = library('spirv-cross',
 spirv_cross_dep = declare_dependency(
     link_with : libspirv_cross,
     include_directories : spvc_incdirs,
+    version : meson.project_version(),
+)
+
+libspirv_cross_native = static_library('spirv-cross-native',
+    spvc_src,
+    cpp_args : spvc_defs,
+    build_by_default : false,
+    include_directories : spvc_incdirs,
+    gnu_symbol_visibility : 'hidden',
+    install : false,
+    native : true,
+)
+
+spirv_cross_native_dep = declare_dependency(
+    link_with : libspirv_cross_native,
+    include_directories : spvc_incdirs,
+    version : meson.project_version(),
+)
+
+spirv_cross_native = executable('spirv-cross',
+    'main.cpp',
+    cpp_args : spvc_defs,
+    dependencies : spirv_cross_native_dep,
+    native : true,
+    build_by_default : false,
 )
 
 if spvc_install
