@@ -3,7 +3,7 @@ project('SPIRV-Cross', 'cpp',
     version : run_command(files('get_version.py')).stdout().strip(),
     meson_version : '>=0.48.0',
     default_options : [
-        'cpp_std=c++11',
+        'cpp_std=gnu++11',
     ]
 )
 
