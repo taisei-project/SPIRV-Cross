@@ -7,6 +7,14 @@ project('SPIRV-Cross', 'cpp',
     ]
 )
 
+native_options = [
+    'b_lto=false',
+    'b_ndebug=true',
+    'b_sanitize=none',
+    'debug=false',
+    'optimization=0',
+]
+
 add_project_arguments(
     meson.get_compiler('cpp').get_supported_arguments(
         '-fno-exceptions',
@@ -92,6 +100,7 @@ libspirv_cross_native = static_library('spirv-cross-native',
     gnu_symbol_visibility : 'hidden',
     install : false,
     native : true,
+    override_options : native_options,
 )
 
 spirv_cross_native_dep = declare_dependency(
@@ -106,6 +115,7 @@ spirv_cross_native = executable('spirv-cross',
     dependencies : spirv_cross_native_dep,
     native : true,
     build_by_default : false,
+    override_options : native_options,
 )
 
 if spvc_install
