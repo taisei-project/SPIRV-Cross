@@ -13,6 +13,11 @@ native_options = [
     'b_sanitize=none',
     'debug=false',
     'optimization=0',
+    'cpp_std=gnu++17',
+]
+
+cross_options = [
+    'cpp_std=gnu++17',
 ]
 
 add_project_arguments(
@@ -84,6 +89,7 @@ libspirv_cross = library('spirv-cross',
     include_directories : spvc_incdirs,
     gnu_symbol_visibility : 'hidden',
     install : spvc_install,
+    override_options : cross_options,
 )
 
 spirv_cross_dep = declare_dependency(
